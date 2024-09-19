@@ -1185,6 +1185,208 @@ class TestGenerativeModels:
         image_part = generative_models.Part.from_image(image)
         assert image_part.mime_type == mime_type
 
+    def test_schema_type_renaming(self):
+        config = generative_models.GenerationConfig(
+            response_schema={
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "foo": {
+                            "type": "string",
+                        },
+                    },
+                },
+            },
+        )
+        assert config.to_dict()["response_schema"] == {
+            "type_": "ARRAY",
+            "items": {
+                "type_": "OBJECT",
+                "properties": {
+                    "foo": {
+                        "type_": "STRING",
+                    },
+                },
+            },
+        }
+
+    def test_schema_format_renaming(self):
+        config = generative_models.GenerationConfig(
+            response_schema={
+                "type": "array",
+                "format": "list",
+                "items": {
+                    "type": "object",
+                    "format": "struct",
+                    "properties": {
+                        "foo": {
+                            "type": "string",
+                            "format": "date",
+                        },
+                    },
+                },
+            },
+        )
+        assert config.to_dict()["response_schema"] == {
+            "type_": "ARRAY",
+            "format_": "list",
+            "items": {
+                "type_": "OBJECT",
+                "format_": "struct",
+                "properties": {
+                    "foo": {
+                        "type_": "STRING",
+                        "format_": "date",
+                    },
+                },
+            },
+        }
+
+    def test_schema_min_max_items_renaming(self):
+        config = generative_models.GenerationConfig(
+            response_schema={
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 3,
+                "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 4,
+                },
+            },
+        )
+        assert config.to_dict()["response_schema"] == {
+            "type_": "ARRAY",
+            "min_items": "1",  # NB: int64 is converted to string
+            "max_items": "3",
+            "items": {
+                "type_": "ARRAY",
+                "min_items": "2",
+                "max_items": "4",
+            },
+        }
+
+    def test_schema_min_max_properties_renaming(self):
+        config = generative_models.GenerationConfig(
+            response_schema={
+                "type": "object",
+                "minProperties": 1,
+                "maxProperties": 3,
+                "properties": {
+                    "foo": {
+                        "type": "object",
+                        "minProperties": 2,
+                        "maxProperties": 4,
+                    },
+                },
+            },
+        )
+        assert config.to_dict()["response_schema"] == {
+            "type_": "OBJECT",
+            "min_properties": "1",  # NB: int64 is converted to string
+            "max_properties": "3",
+            "properties": {
+                "foo": {
+                    "type_": "OBJECT",
+                    "min_properties": "2",
+                    "max_properties": "4",
+                },
+            },
+        }
+
+    def test_schema_min_max_length_renaming(self):
+        config = generative_models.GenerationConfig(
+            response_schema={
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 3,
+                    },
+                    "bar": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 4,
+                        },
+                    },
+                },
+            },
+        )
+        assert config.to_dict()["response_schema"] == {
+            "type_": "OBJECT",
+            "properties": {
+                "foo": {
+                    "type_": "STRING",
+                    "min_length": "1",  # NB: int64 is converted to string
+                    "max_length": "3",
+                },
+                "bar": {
+                    "type_": "ARRAY",
+                    "items": {
+                        "type_": "STRING",
+                        "min_length": "2",
+                        "max_length": "4",
+                    },
+                },
+            },
+        }
+
+    def test_schema_property_ordering_renaming(self):
+        config = generative_models.GenerationConfig(
+            response_schema={
+                "type": "object",
+                "properties": {
+                    "foo": {
+                        "type": "string",
+                    },
+                    "bar": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "baz": {
+                                    "type": "string",
+                                },
+                                "qux": {
+                                    "type": "string",
+                                },
+                            },
+                            "propertyOrdering": ["qux", "baz"]
+                        },
+                    },
+                },
+                "propertyOrdering": ["foo", "bar"]
+            },
+        )
+        assert config.to_dict()["response_schema"] == {
+            "type_": "OBJECT",
+            "properties": {
+                "foo": {
+                    "type_": "STRING",
+                },
+                "bar": {
+                    "type_": "ARRAY",
+                    "items": {
+                        "type_": "OBJECT",
+                        "properties": {
+                            "baz": {
+                                "type_": "STRING",
+                            },
+                            "qux": {
+                                "type_": "STRING",
+                            },
+                        },
+                        "property_ordering": ["qux", "baz"]
+                    },
+                },
+            },
+            "property_ordering": ["foo", "bar"]
+        }
+
 
 EXPECTED_SCHEMA_FOR_GET_CURRENT_WEATHER = {
     "title": "get_current_weather",

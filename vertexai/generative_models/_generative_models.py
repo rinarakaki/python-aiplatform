@@ -2049,10 +2049,24 @@ class FunctionDeclaration:
 def _convert_schema_dict_to_gapic(schema_dict: Dict[str, Any]) -> Dict[str, Any]:
     """Converts a JsonSchema to a dict that the GAPIC Schema class accepts."""
     gapic_schema_dict = copy.copy(schema_dict)
+
+    # This renaming also capitalizes, so it is separate from the loop below.
     if "type" in gapic_schema_dict:
         gapic_schema_dict["type_"] = gapic_schema_dict.pop("type").upper()
-    if "format" in gapic_schema_dict:
-        gapic_schema_dict["format_"] = gapic_schema_dict.pop("format")
+
+    for original, renamed in [
+        ("format", "format_"),
+        ("minItems", "min_items"),
+        ("maxItems", "max_items"),
+        ("minProperties", "min_properties"),
+        ("maxProperties", "max_properties"),
+        ("minLength", "min_length"),
+        ("maxLength", "max_length"),
+        ("propertyOrdering", "property_ordering"),
+    ]:
+        if original in gapic_schema_dict:
+            gapic_schema_dict[renamed] = gapic_schema_dict.pop(original)
+
     if "items" in gapic_schema_dict:
         gapic_schema_dict["items"] = _convert_schema_dict_to_gapic(
             gapic_schema_dict["items"]
