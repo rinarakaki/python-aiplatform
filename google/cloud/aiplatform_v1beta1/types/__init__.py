@@ -483,6 +483,8 @@ from .genai_tuning_service import (
     GetTuningJobRequest,
     ListTuningJobsRequest,
     ListTuningJobsResponse,
+    RebaseTunedModelOperationMetadata,
+    RebaseTunedModelRequest,
 )
 from .hyperparameter_tuning_job import (
     HyperparameterTuningJob,
@@ -1125,6 +1127,7 @@ from .tuning_job import (
     SupervisedTuningDataStats,
     SupervisedTuningSpec,
     TunedModel,
+    TunedModelRef,
     TuningDataStats,
     TuningJob,
 )
@@ -1582,6 +1585,8 @@ __all__ = (
     "GetTuningJobRequest",
     "ListTuningJobsRequest",
     "ListTuningJobsResponse",
+    "RebaseTunedModelOperationMetadata",
+    "RebaseTunedModelRequest",
     "HyperparameterTuningJob",
     "Index",
     "IndexDatapoint",
@@ -2086,6 +2091,7 @@ __all__ = (
     "SupervisedTuningDataStats",
     "SupervisedTuningSpec",
     "TunedModel",
+    "TunedModelRef",
     "TuningDataStats",
     "TuningJob",
     "BoolArray",
