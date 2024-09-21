@@ -436,6 +436,8 @@ from .types.genai_tuning_service import CreateTuningJobRequest
 from .types.genai_tuning_service import GetTuningJobRequest
 from .types.genai_tuning_service import ListTuningJobsRequest
 from .types.genai_tuning_service import ListTuningJobsResponse
+from .types.genai_tuning_service import RebaseTunedModelOperationMetadata
+from .types.genai_tuning_service import RebaseTunedModelRequest
 from .types.hyperparameter_tuning_job import HyperparameterTuningJob
 from .types.index import Index
 from .types.index import IndexDatapoint
@@ -881,6 +883,7 @@ from .types.tuning_job import SupervisedTuningDatasetDistribution
 from .types.tuning_job import SupervisedTuningDataStats
 from .types.tuning_job import SupervisedTuningSpec
 from .types.tuning_job import TunedModel
+from .types.tuning_job import TunedModelRef
 from .types.tuning_job import TuningDataStats
 from .types.tuning_job import TuningJob
 from .types.types import BoolArray
@@ -1573,6 +1576,8 @@ __all__ = (
     "ReadTensorboardTimeSeriesDataResponse",
     "ReadTensorboardUsageRequest",
     "ReadTensorboardUsageResponse",
+    "RebaseTunedModelOperationMetadata",
+    "RebaseTunedModelRequest",
     "RebootPersistentResourceOperationMetadata",
     "RebootPersistentResourceRequest",
     "RemoveContextChildrenRequest",
@@ -1710,6 +1715,7 @@ __all__ = (
     "Trial",
     "TrialContext",
     "TunedModel",
+    "TunedModelRef",
     "TuningDataStats",
     "TuningJob",
     "Type",
